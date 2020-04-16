@@ -1,7 +1,7 @@
 {
   "name": "cli",
   "version": "1.0.0",
-  "description": "",
+  "description": "generate a project template from a remote repo",
   "main": "index.js",
   "bin": {
     "hndt-cli": "./index.js"
@@ -19,6 +19,7 @@
     "commander": "^4.1.1",
     "download-git-repo": "^3.0.2",
     "figlet": "^1.2.4",
+    "fs-extra": "^9.0.0",
     "handlebars": "^4.7.3",
     "inquirer": "^7.0.4",
     "log-symbols": "^3.0.0",

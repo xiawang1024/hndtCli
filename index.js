@@ -1,26 +1,16 @@
 #!/usr/bin/env node
 const chalk = require('chalk')
 const fs = require('fs')
+const fse = require('fs-extra')
+const path = require('path')
 const program = require('commander')
-const download = require('download-git-repo')
-const inquirer = require('inquirer')
-const ora = require('ora')
-const symbols = require('log-symbols')
-const handlebars = require('handlebars')
 const figlet = require('figlet')
+const inquirer = require('inquirer')
+const pkg = require('./package.json')
+const commandAction = require('./utils/commandAction')
+const inquirerHandler = require('./utils/inquirerHandler')
+const {getTemName} = require('./utils/temRepo')
 
-
-
-/**
- * 模板仓库地址 
- * 格式： <host>:<userName>/<repo>#<branchName>
- */
-const REPO_MAP = {
-    'h5-simple':'https://github.com:xiawang1024/koa-template#master',
-    'h5-simple-vue':'',
-    'micro-front-end':''
-}
-const GIT_URL = 'https://github.com:xiawang1024/koa-template#master'
 
 console.log(
     chalk.yellow(
@@ -30,87 +20,49 @@ console.log(
 /**
  * main
  */
-program.version(require('./package').version, '-v,--version')
-    .command('init')
-    .description('init the one project template')
-    .action(async () => {
-        const answers = await inquirerHandler()
-        console.log(answers)
-        commandAction(answers)
+program.version(pkg.version, '-V,--version')
+    .command('init <project_name>')
+    .description(pkg.description)
+    .action(async (project_name) => {
+        if(fs.existsSync(project_name)) {
+            let projectPath = `${__dirname}/${project_name}`
+            console.log(chalk.white(`Target directory`) +  chalk.cyan(` ${projectPath} `) + chalk.white(`is already exists.`) );
+            inquirer.prompt([
+                {
+                    type:'confirm',
+                    name:'Overwrite',
+                    description:'Whether to Overwrite'
+                }
+            ]).then(async(answer) => {
+                
+                if(!answer.Overwrite){
+                    return false
+                }               
+                fse.remove(path.join(`${project_name}`,'./')).then(async()=> {
+                    console.log(chalk.cyan(`${projectPath}`)+`is removed successfully!`)
+                    let answers = await inquirerHandler()
+                    commandAction(answers,project_name)
 
-    })
-/**
- * inquirerHandler
- */
-async function inquirerHandler() {
-    let choices = Object.keys(REPO_MAP);
-    return await inquirer.prompt([
-        {
-            type:'list',
-            name:'repo',
-            message:'which repo do you want to install?',
-            choices
-        },        
-        {
-            type: 'input',
-            name: 'description',
-            message: 'please enter project description:',
-            default: 'project template'
-        },
-        {
-            type: 'input',
-            name: 'author',
-            message: 'please enter author name:',
-            default: 'project_author'
-        },
-    ])
-}
-/**
- * command action
- * @param {*} answers 
- */
-function commandAction(answers) {
-    const { author, repo, description } = answers
-    const cliProcess = ora('start create...')
-    console.log(REPO_MAP[repo])
-    cliProcess.start()
-    download(GIT_URL, REPO_MAP[repo], { clone: true }, (err) => {
-        if (err) {
-            cliProcess.fail()
-            console.log(symbols.error, chalk.red(err))
-        } else {
-            cliProcess.succeed()
-            const fileName = `${repo}/package.json`
-            const meta = {
-                "author": author,
-                "name": repo,
-                "description": description
-            }
-            if (fs.existsSync(fileName)) {
-                const content = fs.readFileSync(fileName).toString()
-                const result = handlebars.compile(content)(meta);
-                fs.writeFileSync(fileName, result)
-            }
-            console.log(symbols.success, chalk.greenBright('created successfully!'))
-            /**
-             * log
-             */
-            okAfterLog(repo)
+                }).catch(err => {
+                    console.log(err)
+                })
+            })
+        }else {
+            let  answers = await inquirerHandler()
+            commandAction(answers,project_name)
         }
+        
     })
-}
-/**
- * 创建成功提示操作
- * @param {*} repo 
- */
-function okAfterLog(repo) {
-    console.log(`
-install dependencies:
-  ${chalk.cyan(`$ cd ${repo} && npm install`)}
-  
-run the app:
-  ${chalk.cyan(`$ npm run start`)}
-`)
-}
+program
+.command('list')
+.description('template list:')
+.action(() => {
+    let temRepoList = getTemName()
+    let temList = `template list:\n`
+    for(item of temRepoList) {
+        temList += `${item}\n`
+    }
+    console.log(`${temList}`)
+})
 
 program.parse(process.argv)
