@@ -13,12 +13,10 @@ const {getTemRepo} =require('../utils/temRepo')
  */
 const commandAction = (answers,dirname) => {
     const cliProcess = ora('start create...')
-    console.log(answers)
     let  { author, tem_name, description } = answers
     tem_name = tem_name.split(':')[0]
-    console.log(getTemRepo(tem_name))
     cliProcess.start()
-    download(getTemRepo(tem_name), dirname, { clone: true }, (err) => {
+    download(`${getTemRepo(tem_name)}#master`, dirname, { clone: true }, (err) => {
         if (err) {
             cliProcess.fail()
             console.log(symbols.error, chalk.red(err))

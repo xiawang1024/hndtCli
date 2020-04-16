@@ -39,7 +39,7 @@ program.version(pkg.version, '-V,--version')
                     return false
                 }               
                 fse.remove(path.join(`${project_name}`,'./')).then(async()=> {
-                    console.log(chalk.cyan(`${projectPath}`)+`is removed successfully!`)
+                    console.log(chalk.cyan(`${projectPath}`)+`is removed.`)
                     let answers = await inquirerHandler()
                     commandAction(answers,project_name)
 
