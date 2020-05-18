@@ -1,5 +1,5 @@
 {
-  "name": "cli",
+  "name": "hndt-cli",
   "version": "1.0.0",
   "description": "generate a project template from a remote repo",
   "main": "index.js",
