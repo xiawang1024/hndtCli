@@ -28,11 +28,7 @@ function checkCliUpdate() {
     let ltsVersion = execSync(`npm view ${pkgName} version --registry=https://registry.npm.taobao.org`) + '';
     if(ltsVersion.trim() !== pkgVersion) {
         console.log(
-            chalk.yellow(
-                `cli 发现新版本，${pkgVersion} -> ${ltsVersion}
-                 建议执行npm i -g ${pkgName}@latest 升级cli
-                `
-            )
+            chalk.black.bgCyan(`cli 发现新版本，${pkgVersion} -> ${ltsVersion}建议执行 npm i -g ${pkgName}@latest 升级cli \n`)
         )
     }
 }
