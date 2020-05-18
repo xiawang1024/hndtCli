@@ -6,6 +6,7 @@ const path = require('path')
 const program = require('commander')
 const figlet = require('figlet')
 const inquirer = require('inquirer')
+const execSync = require('child_process').execSync
 const pkg = require('./package.json')
 const commandAction = require('./utils/commandAction')
 const inquirerHandler = require('./utils/inquirerHandler')
@@ -17,6 +18,24 @@ console.log(
         figlet.textSync('HndtCli', { horizontalLayout: 'full' })
     )
 );
+/**
+ * check version
+ */
+checkCliUpdate()
+function checkCliUpdate() {
+    let pkgName = pkg.name
+    let pkgVersion = pkg.version
+    let ltsVersion = execSync(`npm view ${pkgName} version --registry=https://registry.npm.taobao.org`) + '';
+    if(ltsVersion.trim() !== pkgVersion) {
+        console.log(
+            chalk.yellow(
+                `cli 发现新版本，${pkgVersion} -> ${ltsVersion}
+                 建议执行npm i -g ${pkgName}@latest 升级cli
+                `
+            )
+        )
+    }
+}
 /**
  * main
  */
@@ -34,10 +53,10 @@ program.version(pkg.version, '-V,--version')
                     description:'Whether to Overwrite'
                 }
             ]).then(async(answer) => {
-                
+
                 if(!answer.Overwrite){
                     return false
-                }               
+                }
                 fse.remove(path.join(`${project_name}`,'./')).then(async()=> {
                     console.log(chalk.cyan(`${projectPath}`)+`is removed.`)
                     let answers = await inquirerHandler()
@@ -51,7 +70,7 @@ program.version(pkg.version, '-V,--version')
             let  answers = await inquirerHandler()
             commandAction(answers,project_name)
         }
-        
+
     })
 program
 .command('list')
