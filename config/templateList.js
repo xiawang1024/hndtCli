@@ -9,14 +9,14 @@ const TEMPLATE_LIST = [
         repo_url:'https:///gitee.com:xiawang1024/h5-single'
     },
     {
-        tem_name:'tem-2',
-        description:'tem-2 description',
-        repo_url:'https://gitee.com:xiawang1024/qiankun'
+        tem_name:'h5-vue',
+        description:'基于vue-cli搭建的，适配移动端的单页面开发',
+        repo_url:'https://gitee.com:xiawang1024/h5-vue'
     },
     {
-        tem_name:'tem-3',
-        description:'tem-3 description',
-        repo_url:'https://gitee.com/xiawang1024/qiankun.git'
+        tem_name:'rollup',
+        description:'基于rollup.js搭建的js类库，sdk开发模板，支持umd，cjs，esm规范',
+        repo_url:'https://gitee.com:xiawang1024/rollup-lib'
     }
 ]
 module.exports = TEMPLATE_LIST
