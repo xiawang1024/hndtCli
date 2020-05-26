@@ -6,7 +6,7 @@ const TEMPLATE_LIST = [
     {
         tem_name:'h5-simple',
         description:'基于parcel的简单页面（非spa）开发',
-        repo_url:'https:///gitee.com:xiawang1024/h5-single'
+        repo_url:'https://gitee.com:xiawang1024/h5-single'
     },
     {
         tem_name:'h5-vue',
